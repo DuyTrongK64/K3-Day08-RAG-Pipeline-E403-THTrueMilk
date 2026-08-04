@@ -1,122 +1,227 @@
-"""
-Task 9 — Retrieval Pipeline Hoàn Chỉnh.
+"""Task 9: isolated hybrid retrieval, reranking, and PageIndex fallback.
 
-Kết hợp semantic search + lexical search + reranking + PageIndex fallback
-thành một pipeline thống nhất.
-
-Logic:
-    1. Chạy semantic_search + lexical_search song song
-    2. Merge kết quả (RRF hoặc weighted fusion)
-    3. Rerank
-    4. Nếu top result score < threshold → fallback sang PageIndex
-    5. Return top_k results
-
-⚠️ BẪY THƯỜNG GẶP — đọc kỹ trước khi code:
-    Nếu bạn dùng điểm RRF đã fuse (Task 7) để so với score_threshold, bạn sẽ gặp bug
-    thật: RRF max score luôn ≈ 1/(k+1) ≈ 0.0164 (k=60) BẤT KỂ nội dung có liên quan
-    hay không. Nếu đặt threshold thấp (như 0.005) để "hợp" với thang điểm RRF, thực
-    chất KHÔNG câu hỏi nào đủ thấp để trigger fallback nữa — kể cả query hoàn toàn vô
-    nghĩa vẫn trả về kết quả "hybrid" (rác) thay vì fallback đúng như thiết kế.
-
-    Cách sửa đúng: giữ điểm cosine similarity GỐC của semantic_search (trước khi qua
-    RRF) làm căn cứ quyết định fallback, tách biệt khỏi điểm RRF dùng để sắp xếp kết
-    quả cuối cùng. Calibrate threshold bằng cách tự đo: chạy vài câu hỏi chắc chắn
-    liên quan và vài câu chắc chắn lạc đề/rác qua semantic_search, xem khoảng cách
-    điểm số giữa hai nhóm rồi chọn ngưỡng nằm giữa.
+Task 5 and 6 are expected to return candidate dictionaries but may be absent
+while developed in parallel. ``retrieve_with_dependencies`` is the stable test
+and integration boundary. Output always includes content, score, metadata, and
+retrieval source fields while preserving unknown input fields.
 """
 
-from .task5_semantic_search import semantic_search
-from .task6_lexical_search import lexical_search
-from .task7_reranking import rerank, rerank_rrf
+from __future__ import annotations
+
+import hashlib
+import math
+from collections.abc import Callable, Mapping
+from typing import Any
+
+try:
+    from .task5_semantic_search import semantic_search
+except ImportError:  # pragma: no cover - depends on parallel Task 5 work
+    semantic_search = None
+
+try:
+    from .task6_lexical_search import lexical_search
+except ImportError:  # pragma: no cover - depends on parallel Task 6 work
+    lexical_search = None
+
+from .task7_reranking import reciprocal_rank_fusion, rerank
 from .task8_pageindex_vectorless import pageindex_search
 
-
-# =============================================================================
-# CONFIGURATION
-# =============================================================================
-
-# TODO: Calibrate threshold này bằng cách tự đo điểm cosine của semantic_search
-# cho câu hỏi liên quan vs câu hỏi lạc đề (xem ghi chú ở trên) — ĐỪNG copy nguyên
-# giá trị mẫu, mỗi corpus/embedding model sẽ cho khoảng điểm khác nhau.
-SCORE_THRESHOLD = 0.3   # Nếu best score (cosine gốc) < threshold → fallback PageIndex
+SCORE_THRESHOLD = 0.3
 DEFAULT_TOP_K = 5
-RERANK_METHOD = "rrf"  # "cross_encoder" | "mmr" | "rrf"
+
+
+class RetrievalPipelineError(RuntimeError):
+    """Raised when no retriever can produce a usable result."""
+
+
+def _validate(query: str, top_k: int, score_threshold: float) -> None:
+    if not isinstance(query, str) or not query.strip():
+        raise ValueError("query must be a non-empty string")
+    if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
+        raise ValueError("top_k must be a positive integer")
+    if isinstance(score_threshold, bool) or not isinstance(score_threshold, (int, float)):
+        raise TypeError("score_threshold must be numeric")
+    if not math.isfinite(float(score_threshold)):
+        raise ValueError("score_threshold must be finite")
+
+
+def _score(candidate: Mapping[str, Any]) -> float | None:
+    for key in ("score", "similarity", "relevance_score"):
+        if candidate.get(key) is not None:
+            try:
+                value = float(candidate[key])
+            except (TypeError, ValueError):
+                continue
+            if math.isfinite(value):
+                return value
+    if candidate.get("distance") is not None:
+        try:
+            distance = float(candidate["distance"])
+        except (TypeError, ValueError):
+            return None
+        if math.isfinite(distance) and 0.0 <= distance <= 2.0:
+            return 1.0 - distance
+    return None
+
+
+def _normalize(candidate: Mapping[str, Any], source: str) -> dict[str, Any] | None:
+    content = next(
+        (candidate.get(key) for key in ("content", "text", "document", "page_content") if candidate.get(key)),
+        None,
+    )
+    if not isinstance(content, str) or not content.strip():
+        return None
+    metadata = candidate.get("metadata")
+    result = dict(candidate)
+    result["content"] = content.strip()
+    result["metadata"] = dict(metadata) if isinstance(metadata, Mapping) else {}
+    numeric_score = _score(candidate)
+    result["score"] = numeric_score if numeric_score is not None else 0.0
+    result["retrieval_source"] = source
+    result["source"] = source
+    result[f"{source}_score"] = numeric_score
+    return result
+
+
+def _identity(candidate: Mapping[str, Any]) -> str:
+    metadata = candidate.get("metadata")
+    meta = metadata if isinstance(metadata, Mapping) else {}
+    for key in ("chunk_id", "id"):
+        if meta.get(key) not in (None, ""):
+            return f"{key}:{meta[key]}"
+    canonical = "\x1f".join(
+        (
+            str(meta.get("source") or meta.get("url") or meta.get("path") or ""),
+            str(meta.get("page") or ""),
+            " ".join(str(candidate.get("content", "")).split()).casefold(),
+        )
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _safe_search(
+    name: str,
+    function: Callable[..., list[dict]] | None,
+    query: str,
+    top_k: int,
+    errors: dict[str, str],
+) -> list[dict]:
+    if function is None:
+        errors[name] = "dependency is unavailable"
+        return []
+    try:
+        raw = function(query, top_k=top_k)
+        if not isinstance(raw, list):
+            raise TypeError("returned a non-list result")
+        return raw
+    except Exception as exc:
+        # Do not propagate provider messages: an SDK exception can contain credentials.
+        errors[name] = f"{type(exc).__name__}: dependency failed"
+        return []
+
+
+def _fuse(semantic: list[dict], lexical: list[dict], top_k: int) -> list[dict]:
+    fused = reciprocal_rank_fusion([semantic, lexical], top_k=top_k)
+    details: dict[str, dict[str, Any]] = {}
+    membership: dict[str, set[str]] = {}
+    for source, ranked in (("semantic", semantic), ("lexical", lexical)):
+        for item in ranked:
+            key = _identity(item)
+            membership.setdefault(key, set()).add(source)
+            details.setdefault(key, {}).update({f"{source}_score": item.get(f"{source}_score")})
+    for item in fused:
+        key = _identity(item)
+        item.update(details.get(key, {}))
+        sources = membership.get(key, set())
+        retrieval_source = "hybrid" if len(sources) > 1 else next(iter(sources), "hybrid")
+        item["retrieval_source"] = retrieval_source
+        item["source"] = retrieval_source
+    return fused
+
+
+def _combine_fallback(
+    query: str,
+    hybrid: list[dict],
+    pageindex: list[dict],
+    rerank_fn: Callable[..., list[dict]],
+    top_k: int,
+) -> list[dict]:
+    if not hybrid:
+        return pageindex[:top_k]
+    combined = reciprocal_rank_fusion([pageindex, hybrid], top_k=max(top_k * 2, 10))
+    for item in combined:
+        if item.get("retrieval_source") not in {"pageindex", "semantic", "lexical", "hybrid"}:
+            item["retrieval_source"] = "hybrid"
+        item["source"] = item["retrieval_source"]
+    return rerank_fn(query, combined, top_k=top_k)
+
+
+# Integration contract: dependencies use only (query, top_k) and normalized dicts.
+def retrieve_with_dependencies(
+    query: str,
+    *,
+    semantic_search_fn: Callable[..., list[dict]] | None,
+    lexical_search_fn: Callable[..., list[dict]] | None,
+    rerank_fn: Callable[..., list[dict]],
+    pageindex_search_fn: Callable[..., list[dict]],
+    top_k: int = DEFAULT_TOP_K,
+    score_threshold: float = SCORE_THRESHOLD,
+) -> list[dict]:
+    """Run the retrieval pipeline with injectable, independently failing adapters."""
+    _validate(query, top_k, score_threshold)
+    candidate_k = max(top_k * 3, 10)
+    errors: dict[str, str] = {}
+    raw_semantic = _safe_search("semantic", semantic_search_fn, query, candidate_k, errors)
+    raw_lexical = _safe_search("lexical", lexical_search_fn, query, candidate_k, errors)
+    semantic = [item for raw in raw_semantic if isinstance(raw, Mapping) and (item := _normalize(raw, "semantic"))]
+    lexical = [item for raw in raw_lexical if isinstance(raw, Mapping) and (item := _normalize(raw, "lexical"))]
+
+    # Threshold is deliberately based only on original Task 5 scores, never RRF.
+    semantic_scores = [item["semantic_score"] for item in semantic if item.get("semantic_score") is not None]
+    best_semantic_score = max(semantic_scores) if semantic_scores else None
+    fused = _fuse(semantic, lexical, max(top_k * 2, 10))
+    try:
+        hybrid = rerank_fn(query, fused, top_k=top_k) if fused else []
+    except Exception as exc:
+        errors["rerank"] = f"{type(exc).__name__}: dependency failed"
+        hybrid = fused[:top_k]
+
+    should_fallback = not fused or best_semantic_score is None or best_semantic_score < float(score_threshold)
+    page_results: list[dict] = []
+    if should_fallback:
+        raw_page = _safe_search("pageindex", pageindex_search_fn, query, candidate_k, errors)
+        page_results = [
+            item for raw in raw_page if isinstance(raw, Mapping) and (item := _normalize(raw, "pageindex"))
+        ]
+        if page_results:
+            try:
+                return _combine_fallback(query, hybrid, page_results, rerank_fn, top_k)
+            except Exception as exc:
+                errors["final_rerank"] = f"{type(exc).__name__}: dependency failed"
+                return page_results[:top_k] if not hybrid else hybrid[:top_k]
+
+    if hybrid:
+        return hybrid[:top_k]
+    if page_results:
+        return page_results[:top_k]
+    if errors:
+        summary = "; ".join(f"{name}={message}" for name, message in errors.items())
+        raise RetrievalPipelineError(f"No retrieval dependency produced results: {summary}")
+    return []
 
 
 def retrieve(
     query: str,
     top_k: int = DEFAULT_TOP_K,
     score_threshold: float = SCORE_THRESHOLD,
-    use_reranking: bool = True,
 ) -> list[dict]:
-    """
-    Retrieval pipeline hoàn chỉnh với fallback logic.
-
-    Pipeline:
-        Query
-          ├→ Semantic Search → dense_results (giữ điểm cosine gốc)
-          ├→ Lexical Search  → sparse_results
-          │
-          ├→ Merge (RRF) → merged_results
-          ├→ Rerank → reranked_results
-          │
-          └→ If dense_results[0]["score"] < threshold:
-                └→ PageIndex Vectorless → fallback_results
-
-    Args:
-        query: Câu truy vấn
-        top_k: Số lượng kết quả cuối cùng
-        score_threshold: Ngưỡng điểm cosine gốc tối thiểu (KHÔNG phải điểm RRF)
-        use_reranking: Có áp dụng reranking hay không
-
-    Returns:
-        List of {
-            'content': str,
-            'score': float,
-            'metadata': dict,
-            'source': str  # 'hybrid' hoặc 'pageindex'
-        }
-    """
-    # TODO: Implement full retrieval pipeline
-    #
-    # Step 1: Song song chạy semantic + lexical
-    # dense_results = semantic_search(query, top_k=top_k * 2)
-    # sparse_results = lexical_search(query, top_k=top_k * 2)
-    #
-    # Step 2: Merge bằng RRF
-    # merged = rerank_rrf([dense_results, sparse_results], top_k=top_k * 2)
-    # for item in merged:
-    #     item["source"] = "hybrid"
-    #
-    # Step 3: Rerank
-    # if use_reranking and merged:
-    #     final_results = rerank(query, merged, top_k=top_k, method=RERANK_METHOD)
-    # else:
-    #     final_results = merged[:top_k]
-    #
-    # Step 4: Check threshold DÙNG ĐIỂM COSINE GỐC (dense_results), KHÔNG PHẢI RRF
-    # best_score = dense_results[0]["score"] if dense_results else 0.0
-    # if best_score < score_threshold:
-    #     print(f"  ⚠ Semantic best score ({best_score:.3f}) < threshold ({score_threshold})")
-    #     fallback = pageindex_search(query, top_k=top_k)
-    #     if fallback:
-    #         return fallback
-    #
-    # return final_results[:top_k]
-    raise NotImplementedError("Implement retrieve")
-
-
-if __name__ == "__main__":
-    test_queries = [
-        "What is the tuition fee at RMIT Vietnam?",
-        "How do I book a library study room?",
-        "What scholarships are available for international students?",
-        "xyzabc123nonsense",  # Query không có kết quả → test fallback
-    ]
-
-    for q in test_queries:
-        print(f"\nQuery: {q}")
-        print("-" * 60)
-        results = retrieve(q, top_k=3)
-        for i, r in enumerate(results, 1):
-            print(f"  {i}. [{r['score']:.3f}] [{r['source']}] {r['content'][:80]}...")
+    """Run hybrid search, RRF fusion, reranking, and conditional PageIndex fallback."""
+    return retrieve_with_dependencies(
+        query,
+        semantic_search_fn=semantic_search,
+        lexical_search_fn=lexical_search,
+        rerank_fn=rerank,
+        pageindex_search_fn=pageindex_search,
+        top_k=top_k,
+        score_threshold=score_threshold,
+    )
