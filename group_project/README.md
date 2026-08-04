@@ -1,4 +1,4 @@
-# Bài Tập Nhóm — University Services RAG Chatbot
+# Bài Tập Nhóm — Trợ Lý Hỏi Đáp Luật Lao Động Cho Người Trẻ
 
 ## Mục Tiêu
 

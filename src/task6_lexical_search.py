@@ -71,26 +71,30 @@ def lexical_search(query: str, top_k: int = 10) -> list[dict]:
     if _bm25_instance is None:
         return []
         
-    tokenized_query = query.lower().split()
-    scores = _bm25_instance.get_scores(tokenized_query)
-    
-    # Get top_k indices
-    import numpy as np
-    top_indices = np.argsort(scores)[::-1][:top_k]
-    
+    return lexical_search_with_dependencies(query, CORPUS, _bm25_instance, top_k=top_k)
+
+
+def lexical_search_with_dependencies(query: str, corpus: list[dict], bm25, top_k: int = 10) -> list[dict]:
+    """Integration wrapper preserving the existing BM25 object and corpus."""
+    if not isinstance(query, str) or not query.strip():
+        raise ValueError("query must be a non-empty string")
+    scores = bm25.get_scores(query.lower().split())
+    top_indices = sorted(range(len(scores)), key=lambda idx: scores[idx], reverse=True)[:top_k]
     results = []
     for idx in top_indices:
         if scores[idx] > 0:
             results.append({
-                "content": CORPUS[idx]["content"],
+                "content": corpus[idx]["content"],
                 "score": float(scores[idx]),
-                "metadata": CORPUS[idx]["metadata"]
+                "lexical_score": float(scores[idx]),
+                "metadata": corpus[idx]["metadata"],
+                "retrieval_source": "lexical",
             })
     return results
 
 
 if __name__ == "__main__":
     # Test
-    results = lexical_search("tuition fee payment methods", top_k=5)
+    results = lexical_search("nghỉ hằng năm", top_k=5)
     for r in results:
         print(f"[{r['score']:.3f}] {r['content'][:100]}...")

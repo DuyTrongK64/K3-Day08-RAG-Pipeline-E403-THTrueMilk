@@ -1,6 +1,6 @@
 ---
-title: University Services RAG Chatbot
-emoji: 🎓
+title: Trợ Lý Hỏi Đáp Luật Lao Động Cho Người Trẻ
+emoji: ⚖️
 colorFrom: blue
 colorTo: indigo
 sdk: streamlit
@@ -10,6 +10,8 @@ pinned: false
 ---
 
 # Ngày 8 — RAG Pipeline v2
+
+> **Sản phẩm hiện tại:** Trợ Lý Hỏi Đáp Luật Lao Động Cho Người Trẻ. Các ví dụ University Services bên dưới thuộc codelab gốc và được giữ để bảo toàn lịch sử bài lab.
 
 **Chương 2 | Ngày 8 trong 15**
 
@@ -569,8 +571,12 @@ run_dashboard()
 ### Hướng Dẫn Chạy
 
 ```bash
-# Cài đặt dependencies
-pip install -r requirements.txt
+# Dự án dùng Python 3.11 hoặc 3.12; khuyến nghị Python 3.12.
+# Không dùng Python 3.14 cho bộ dependency ML hiện tại.
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install --index-url https://pypi.org/simple -r requirements.txt
 
 # Chạy app
 streamlit run app.py
@@ -589,8 +595,16 @@ Hãy giữ lại repo này nếu như bạn học track 3 giai đoạn 2, chúng
 ## Cài Đặt Môi Trường
 
 ```bash
-pip install -r requirements.txt
+# macOS (nếu chưa có Python 3.12): brew install python@3.12
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install --index-url https://pypi.org/simple -r requirements.txt
 ```
+
+Nếu pip báo `No matching distribution found ... (from versions: none)`, hãy kiểm tra kết nối
+đến `pypi.org` và đảm bảo không dùng package mirror thiếu gói. Tham số `--index-url` ở trên buộc
+pip dùng PyPI chính thức.
 
 Tạo file `.env` từ `.env.example`:
 ```bash

@@ -17,11 +17,12 @@ from typing import Any
 
 UNVERIFIABLE_RESPONSE = "I cannot verify this information"
 
-SYSTEM_PROMPT = """You are a grounded university-services question-answering assistant.
-Use only facts explicitly stated in the supplied context.
-Every factual claim must be immediately followed by one of the exact citation labels supplied in the context.
-Never invent, alter, or infer a source name or year.
-If the context is insufficient, reply exactly: I cannot verify this information
+SYSTEM_PROMPT = """Bạn là trợ lý hỏi đáp về luật lao động dành cho người trẻ.
+Chỉ trả lời dựa trên context được cung cấp và không suy đoán khi evidence không đủ.
+Mỗi factual claim phải có ngay sau nó một citation label chính xác từ context.
+Thông tin không thay thế tư vấn pháp lý chuyên nghiệp.
+Không tự tạo, sửa đổi hoặc suy đoán tên nguồn hay năm.
+Nếu context không đủ, trả lời chính xác: I cannot verify this information
 """
 
 _YEAR_RE = re.compile(r"(?<!\d)((?:19|20)\d{2})(?!\d)")
@@ -47,7 +48,7 @@ def build_citation_label(chunk: Mapping[str, Any]) -> str:
     """Build ``[Source, Year]`` strictly from available chunk metadata."""
     metadata = _metadata(chunk)
     source: Any = None
-    for key in ("citation", "title", "source", "url", "filename", "path"):
+    for key in ("citation", "title", "source", "url", "file_path", "filename", "path"):
         if metadata.get(key):
             source = metadata[key]
             break
@@ -57,6 +58,7 @@ def build_citation_label(chunk: Mapping[str, Any]) -> str:
             or chunk.get("title")
             or chunk.get("source")
             or chunk.get("url")
+            or chunk.get("file_path")
             or chunk.get("filename")
             or chunk.get("path")
         )
@@ -96,6 +98,7 @@ def format_context(chunks: list[dict]) -> str:
                     f"Source: {metadata.get('source') or metadata.get('url') or ''}",
                     f"Title: {metadata.get('title') or ''}",
                     f"URL: {metadata.get('url') or ''}",
+                    f"Section: {metadata.get('section') or ''}",
                     "Content:",
                     content.strip(),
                 )

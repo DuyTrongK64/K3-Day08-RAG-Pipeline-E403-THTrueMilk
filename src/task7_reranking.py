@@ -21,7 +21,7 @@ class RerankError(RuntimeError):
     """Raised for invalid reranker responses or configuration."""
 
 
-_CONTENT_ALIASES = ("content", "text", "document", "page_content")
+_CONTENT_ALIASES = ("content", "text", "document", "page_content", "body")
 _SCORE_ALIASES = ("score", "similarity", "relevance_score")
 _TOKEN_RE = re.compile(r"\w+", re.UNICODE)
 
@@ -69,6 +69,8 @@ def _document_identity(candidate: Mapping[str, Any]) -> str:
     for key in ("chunk_id", "id"):
         if meta.get(key) not in (None, ""):
             return f"{key}:{meta[key]}"
+    if meta.get("document_id") not in (None, ""):
+        return f"document:{meta['document_id']}:{meta.get('page', '')}:{meta.get('section', '')}"
     content = str(candidate.get("content", "")).strip()
     source = meta.get("source") or meta.get("url") or meta.get("path") or ""
     page = meta.get("page", "")

@@ -66,7 +66,11 @@ def _score(candidate: Mapping[str, Any]) -> float | None:
 
 def _normalize(candidate: Mapping[str, Any], source: str) -> dict[str, Any] | None:
     content = next(
-        (candidate.get(key) for key in ("content", "text", "document", "page_content") if candidate.get(key)),
+        (
+            candidate.get(key)
+            for key in ("content", "text", "document", "page_content", "body")
+            if candidate.get(key)
+        ),
         None,
     )
     if not isinstance(content, str) or not content.strip():
@@ -79,7 +83,18 @@ def _normalize(candidate: Mapping[str, Any], source: str) -> dict[str, Any] | No
     result["score"] = numeric_score if numeric_score is not None else 0.0
     result["retrieval_source"] = source
     result["source"] = source
-    result[f"{source}_score"] = numeric_score
+    # Integration adapter: preserves calibrated scores from the original retrievers.
+    if source == "semantic":
+        explicit_semantic = candidate.get("semantic_score")
+        result["semantic_score"] = (
+            _score({"score": explicit_semantic}) if explicit_semantic is not None else None
+        )
+        if result["semantic_score"] is None and candidate.get("score_type") in (None, "cosine_similarity"):
+            result["semantic_score"] = numeric_score
+    elif source == "lexical":
+        result["lexical_score"] = candidate.get("lexical_score", numeric_score)
+    else:
+        result[f"{source}_score"] = numeric_score
     return result
 
 
@@ -89,6 +104,8 @@ def _identity(candidate: Mapping[str, Any]) -> str:
     for key in ("chunk_id", "id"):
         if meta.get(key) not in (None, ""):
             return f"{key}:{meta[key]}"
+    if meta.get("document_id") not in (None, ""):
+        return f"document:{meta['document_id']}:{meta.get('page', '')}:{meta.get('section', '')}"
     canonical = "\x1f".join(
         (
             str(meta.get("source") or meta.get("url") or meta.get("path") or ""),
@@ -204,7 +221,7 @@ def retrieve_with_dependencies(
         return hybrid[:top_k]
     if page_results:
         return page_results[:top_k]
-    if errors:
+    if {"semantic", "lexical", "pageindex"}.issubset(errors):
         summary = "; ".join(f"{name}={message}" for name, message in errors.items())
         raise RetrievalPipelineError(f"No retrieval dependency produced results: {summary}")
     return []

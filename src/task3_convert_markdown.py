@@ -3,19 +3,21 @@
 import json
 from pathlib import Path
 
-from markitdown import MarkItDown
+from src.config import LANDING_DIR, STANDARDIZED_DIR
 
 
-LANDING_DIR = Path(__file__).parent.parent / "data" / "landing"
-OUTPUT_DIR = Path(__file__).parent.parent / "data" / "standardized"
+OUTPUT_DIR = STANDARDIZED_DIR
 
 
-def convert_legal_docs() -> list[Path]:
+def convert_legal_docs(input_dir: Path | None = None, output_dir: Path | None = None, converter=None) -> list[Path]:
     """Convert PDF/DOC/DOCX files and preserve the legal subdirectory."""
-    input_dir = LANDING_DIR / "legal"
-    output_dir = OUTPUT_DIR / "legal"
+    input_dir = input_dir or LANDING_DIR / "legal"
+    output_dir = output_dir or OUTPUT_DIR / "legal"
     output_dir.mkdir(parents=True, exist_ok=True)
-    converter = MarkItDown()
+    if converter is None:
+        from markitdown import MarkItDown
+
+        converter = MarkItDown()
     outputs = []
 
     files = sorted(
@@ -43,6 +45,7 @@ def convert_legal_docs() -> list[Path]:
         header = (
             "---\n"
             f"source_file: {json.dumps(filepath.name, ensure_ascii=False)}\n"
+            f"title: {json.dumps(filepath.stem, ensure_ascii=False)}\n"
             "document_type: \"legal_document\"\n"
             "language: \"vi\"\n"
             "conversion_tool: \"Microsoft MarkItDown\"\n"
@@ -57,10 +60,10 @@ def convert_legal_docs() -> list[Path]:
     return outputs
 
 
-def convert_news_articles() -> list[Path]:
+def convert_news_articles(input_dir: Path | None = None, output_dir: Path | None = None) -> list[Path]:
     """Extract content_markdown and metadata from Task 2 JSON files."""
-    input_dir = LANDING_DIR / "news"
-    output_dir = OUTPUT_DIR / "news"
+    input_dir = input_dir or LANDING_DIR / "news"
+    output_dir = output_dir or OUTPUT_DIR / "news"
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = []
 
@@ -76,6 +79,7 @@ def convert_news_articles() -> list[Path]:
             raise ValueError(f"{filepath.name} thiếu content_markdown")
 
         metadata_keys = (
+            "title",
             "url",
             "author",
             "published_date",

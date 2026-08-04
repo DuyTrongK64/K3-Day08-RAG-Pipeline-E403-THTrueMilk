@@ -1,5 +1,5 @@
 """
-RAG Chatbot — University Services (Starter Template)
+RAG Chatbot — Trợ Lý Hỏi Đáp Luật Lao Động Cho Người Trẻ
 Streamlit app kết nối RAG Retrieval (Task 9) và Generation (Task 10).
 
 Chạy:
@@ -24,8 +24,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # =============================================================================
 
 st.set_page_config(
-    page_title="University Services RAG Chatbot",
-    page_icon="🎓",
+    page_title="Trợ Lý Luật Lao Động Cho Người Trẻ",
+    page_icon="⚖️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -35,18 +35,18 @@ st.set_page_config(
 # =============================================================================
 
 with st.sidebar:
-    st.title("🎓 University Services RAG")
-    st.caption("Trợ lý hỏi đáp về dịch vụ và chính sách đại học (học phí, học bổng, ký túc xá, thư viện)")
+    st.title("⚖️ Luật Lao Động Cho Người Trẻ")
+    st.caption("Thông tin từ tài liệu về hợp đồng, thử việc, tiền lương, nghỉ phép và bảo hiểm")
 
     st.divider()
 
     st.subheader("💡 Câu hỏi gợi ý")
     suggestions = [
-        "Học phí tại RMIT Vietnam là bao nhiêu?",
-        "Làm sao để đặt phòng học nhóm ở thư viện?",
-        "Điều kiện xin học bổng Academic Achievement?",
-        "Dịch vụ hỗ trợ chỗ ở cho sinh viên như thế nào?",
-        "Cách đăng ký học phần qua myRMIT?",
+        "Thử việc được thỏa thuận như thế nào?",
+        "Người lao động có quyền nghỉ hằng năm ra sao?",
+        "Tiền lương được trả theo nguyên tắc nào?",
+        "Khi nghỉ việc cần lưu ý điều gì?",
+        "Điều kiện làm thêm giờ là gì?",
     ]
     for s in suggestions:
         if st.button(s, use_container_width=True, key=f"sug_{s[:20]}"):
@@ -73,8 +73,8 @@ if "pending_query" not in st.session_state:
 # MAIN CHAT AREA
 # =============================================================================
 
-st.title("🎓 University Services RAG Chatbot")
-st.caption("Hệ thống hỏi đáp thông tin dịch vụ đại học (Học phí, Học bổng, Ký túc xá, Thư viện)")
+st.title("⚖️ Trợ Lý Hỏi Đáp Luật Lao Động Cho Người Trẻ")
+st.caption("Nội dung dựa trên tài liệu được cung cấp và không thay thế tư vấn pháp lý chuyên nghiệp")
 
 # Hiển thị lịch sử chat
 for msg in st.session_state.messages:
@@ -84,10 +84,12 @@ for msg in st.session_state.messages:
             with st.expander(f"📚 Nguồn tham khảo ({len(msg['sources'])} chunks)"):
                 for i, src in enumerate(msg["sources"], 1):
                     meta = src.get("metadata", {})
-                    source_name = meta.get("source", "Unknown")
-                    doc_type = meta.get("type", "unknown")
+                    source_name = meta.get("title") or meta.get("source", "Unknown")
+                    doc_type = meta.get("document_type") or meta.get("type", "unknown")
                     score = src.get("score", 0)
                     st.markdown(f"**[{i}] {source_name}** `{doc_type}` | score: `{score:.4f}`")
+                    if meta.get("url"):
+                        st.markdown(f"[Mở nguồn]({meta['url']})")
                     st.text(src.get("content", "")[:300] + "...")
                     st.divider()
 
@@ -96,7 +98,7 @@ for msg in st.session_state.messages:
 # =============================================================================
 
 # Xử lý khi bấm nút gợi ý hoặc nhập câu hỏi mới
-user_input = st.chat_input("Nhập câu hỏi của bạn về chính sách/dịch vụ đại học...")
+user_input = st.chat_input("Nhập câu hỏi về hợp đồng, thử việc, tiền lương, nghỉ phép...")
 query = user_input or st.session_state.pending_query
 
 if query:
@@ -111,24 +113,17 @@ if query:
     with st.chat_message("assistant"):
         with st.spinner("Đang tìm kiếm tài liệu và tổng hợp câu trả lời..."):
             try:
-                # TODO (Học viên): Tích hợp hàm sinh câu trả lời từ Task 10
-                # Ví dụ:
-                # from src.task10_generation import generate_with_citation
-                # response = generate_with_citation(query, top_k=top_k)
-                # answer = response["answer"]
-                # sources = response.get("sources", [])
-
-                # Tạm thời mockup để test UI:
+                # Integration adapter: UI keeps its layout and calls only Task 9 → Task 10.
+                from src.task9_retrieval_pipeline import retrieve
                 from src.task10_generation import generate_with_citation
-                response = generate_with_citation(query, top_k=top_k)
-                answer = response.get("answer", "Chưa thể trả lời.")
-                sources = response.get("sources", [])
+                sources = retrieve(query, top_k=top_k)
+                answer = generate_with_citation(query, sources)
 
             except NotImplementedError:
                 answer = "⚠️ **Task 10 chưa được implement.** Hãy hoàn thành `src/task10_generation.py` để kết nối pipeline vào UI!"
                 sources = []
-            except Exception as e:
-                answer = f"❌ **Lỗi khi chạy RAG Pipeline:** {e}"
+            except Exception:
+                answer = "❌ **Không thể chạy pipeline. Hãy kiểm tra index và cấu hình dịch vụ.**"
                 sources = []
 
             st.markdown(answer)
@@ -137,10 +132,12 @@ if query:
                 with st.expander(f"📚 Nguồn tham khảo ({len(sources)} chunks)"):
                     for i, src in enumerate(sources, 1):
                         meta = src.get("metadata", {})
-                        source_name = meta.get("source", "Unknown")
-                        doc_type = meta.get("type", "unknown")
+                        source_name = meta.get("title") or meta.get("source", "Unknown")
+                        doc_type = meta.get("document_type") or meta.get("type", "unknown")
                         score = src.get("score", 0)
                         st.markdown(f"**[{i}] {source_name}** `{doc_type}` | score: `{score:.4f}`")
+                        if meta.get("url"):
+                            st.markdown(f"[Mở nguồn]({meta['url']})")
                         st.text(src.get("content", "")[:300] + "...")
                         st.divider()
 
