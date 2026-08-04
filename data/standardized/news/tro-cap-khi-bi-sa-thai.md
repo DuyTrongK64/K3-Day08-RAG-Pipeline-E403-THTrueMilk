@@ -1,0 +1,63 @@
+---
+url: "https://htpldn.moj.gov.vn/Pages/chi-tiet-tin.aspx?ItemID=4&l=Tuvanphapluat"
+author: "Trung tam Ho tro phap ly cho doanh nghiep nho va vua - Bo Tu phap"
+published_date: "27/12/2022"
+date_crawled: "2026-08-04T10:38:49+07:00"
+source_domain: "htpldn.moj.gov.vn"
+source_owner: "Trung tam Ho tro phap ly cho doanh nghiep nho va vua - Bo Tu phap"
+topic: "sa thai"
+document_type: "legal_advice_article"
+language: "vi"
+source_file: "tro-cap-khi-bi-sa-thai.json"
+---
+
+# Người lao động bị sa thải thì được nhận những trợ cấp gì?
+*Câu hỏi: Sau khi bị sa thải thì người lao động có nhận được những khoản trợ cấp nào không?*
+
+***Câu hỏi:*** *Sau khi bị sa thải thì người lao động có nhận được những khoản trợ cấp nào không?*
+***Trả lời:***
+***1. Căn cứ sa thải theo quy định pháp luật lao động***
+*Theo quy định của Bộ luật lao động người lao động bị xử lý kỷ luật sa thải khi vi phạm một trong những căn cứ như:*
+*+ Có hành vi trộm cắp, tham ô, đánh bạc, cố ý gây thương tích, sử dụng ma túy tại nơi làm việc.*
+*+ Tiết lộ bí mật kinh doanh, bí mật công nghệ, xâm phạm quyền sở hữu trí tuệ của người sử dụng lao động*
+*+ Gây thiệt hại nghiêm trọng hoặc đe dọa gây thiệt hại đặc biệt nghiêm trọng về tài sản, lợi ích của người sử dụng lao động*
+*+ Người lao động bị xử lý kỷ luật kéo dài thời hạn nâng lương mà tái phạm trong thời gian chưa được xóa kỷ luật*
+*+ Người lao động bị xử lý kỷ luật cách chức mà vẫn tái phạm*
+*+ Người lao động tự ý nghỉ việc không có lý do chính đáng trong 5 ngày cộng dồn trong một tháng hoặc 20 ngày cộng dồn trong một năm.*
+*Vậy nếu như người lao động bị sa thải thì các quyền lợi, chế độ được hưởng sẽ là những gì? Có khác gì so với người lao động nghỉ việc thông thường.*
+***2. Các khoản tiền được nhận khi bị sa thải***
+***2.1 Trợ cấp thôi việc***
+*Trợ cấp thôi việc là khoản hỗ trợ từ phía người sử dụng lao động cho người lao động khi hợp đồng lao động chấm dứt. Tuy nhiên khoản trợ cấp này không trả cho tất cả người lao động khi chấm dứt hợp đồng, trợ cấp thôi việc chỉ áp dụng trong 10 trường hợp chấm dứt hợp đồng được liệt kê tại điều 48* [*Bộ luật lao động năm 2012*](https://luatminhkhue.vn/bo-luat-lao-dong-nam-2012-.aspx)*:*
+*1. Khi hợp đồng lao động chấm dứt theo quy định tại các khoản 1, 2, 3, 5, 6, 7, 9 và 10 Điều 36 của Bộ luật này thì người sử dụng lao động có trách nhiệm chi trả trợ cấp thôi việc cho người lao động đã làm việc thường xuyên từ đủ 12 tháng trở lên, mỗi năm làm việc được trợ cấp một nửa tháng tiền lương.*
+*- Hết hạn hợp đồng lao động;*
+*- Công việc theo hợp đồng lao động được hoàn thành;*
+*- Hai bên thỏa thuận chấm dứt hợp đồng lao động;*
+*- Người lao động bị kết án tù giam, tử hình, bị cấm làm việc;*
+*- Người lao động chết, bị Tòa án tuyên bố mất năng lực hành vi dân sự, mất tích hoặc tuyên bố chết;*
+*- Người lao động đơn phương chấm dứt hợp đồng lao động đúng luật;*
+*- Người sử dụng lao động chết, bị Tòa án tuyên bố mất năng lực hành vi dân sự, mất tích hoặc tuyên bố chết; hoặc chấm dứt hoạt động;*
+*- Người sử dụng lao động đơn phương chấm dứt hợp đồng lao động;*
+***Đối với trường hợp sa thải, người lao động sẽ không nhận được trợ cấp thôi việc****, bởi như đã trình bày ở trên việc sa thải dựa trên vi phạm trong quá trình làm việc của người lao động nên người lao động không có quyền hưởng trợ cấp thôi việc.*
+***2.2 Trợ cấp thất nghiệp***
+*Đối với trợ cấp thất nghiệp thì **người lao động bị sa thải vẫn có thể được hưởng, khi đáp ứng các điều kiện sau đây:***
+*+ Chấm dứt hợp đồng (trừ trường hợp đơn phương chấm dứt hợp đồng lao động trái luật)*
+*+ Trước khi bị sa thải phải có thời gian đóng bảo hiểm thất nghiệp tối thiểu 12 tháng*
+*+ Trong thời hạn 3 tháng kể từ ngày có quyết định sa thải phải nộp hồ sơ hưởng trợ cấp thất nghiệp cho trung tâm dịch vụ việc làm, hồ sơ gồm có:*
+*1. Đơn xin hưởng trợ cấp thất nghiệp*
+*2. Sổ bảo hiểm xã hội*
+*3. Bản chính hoặc bản sao có công chứng, chứng thực quyết định sa thải.*
+*Như vậy dựa theo quy định của Luật việc làm về chế độ trợ cấp thất nghiệp thì pháp luật không loại trừ trường hợp sa thải thì không được hưởng trợ cấp thất nghiệp, miễn sao người lao động bị sa thải đáp ứng đủ điều kiện hưởng trợ cấp thất nghiệp như những trường hợp hưởng trợ cấp thất nghiệp khác.*
+*Thời gian hưởng trợ cấp thất nghiệp sẽ được tính theo năm đóng bảo hiểm thất nghiệp, đóng một đến ba năm thì hưởng trợ cấp 3 tháng; thêm một năm được hưởng trợ cấp thêm một tháng. Mức hưởng được tính bằng 60% dựa trên bình quân lương của 6 tháng trước khi người lao động bị sa thải.*
+***2.3 Bảo hiểm xã hội một lần***
+*Điều kiện hưởng bảo hiểm xã hội một lần đối với người lao động chưa đủ điều kiện hưởng lương hưu theo quy định của Luật bảo hiểm xã hội năm 2014 được quy định như sau: Người lao động có thời gian đóng bảo hiểm xã hội dưới 20 năm và không tiếp tục tham gia bảo hiểm xã hội sau một năm nghỉ việc.*
+*Khác với trợ cấp thôi việc và thất nghiệp, bảo hiểm xã hội một lần không phân biệt người lao động chấm dứt hợp đồng trong trường hợp nào, không loại trừ người lao động bị sa thải mà chỉ cần người lao động không tiếp tục làm việc tại đơn vị sử dụng lao động, không tiếp tục tham gia bảo hiểm xã hội trong một năm và tính đến thời điểm đề nghị hưởng bảo hiểm một lần thì tổng thời gian đóng bảo hiểm là dưới 20 năm.*
+***Vì thế người lao động bị sa thải vẫn có thể hưởng bảo hiểm xã hội một lần*** *khi thỏa mãn thời gian đóng bảo hiểm xã hội là dưới 20 năm.*
+*Hồ sơ hưởng bảo hiểm xã hội một lần gồm có các giấy tờ sau:*
+*1. Đơn đề nghị hưởng bảo hiểm xã hội một lần*
+*2. Sổ bảo hiểm xã hội*
+*Mức hưởng:*
+*Mức hưởng bảo hiểm xã hội một lần được tính theo số năm đã đóng bảo hiểm xã hội, cứ mỗi năm được tính như sau:*
+*a) 1,5 tháng mức bình quân tiền lương tháng đóng bảo hiểm xã hội cho những năm đóng trước năm 2014;*
+*b) 02 tháng mức bình quân tiền lương tháng đóng bảo hiểm xã hội cho những năm đóng từ năm 2014 trở đi;*
+***Kết luận: Như vậy, trong các khoản trợ cấp mà người lao động thường nhận khi nghỉ việc thì chỉ có trợ cấp thôi việc là người lao động bị sa thải không được nhận, còn trợ cấp thất nghiệp và bảo hiểm xã hội một lần nếu như đủ điều kiện luật định thì người lao động vẫn được hưởng.***
+***Bài học kinh nghiệm:* Sau khi ra quyết định sa thải, các chế độ khác đối với người lao động như lương, trợ cấp, bảo hiểm xã hội… cần phải bảo đảm để chấm dứt quan hệ lao động được phù hợp theo quy định pháp luật.**

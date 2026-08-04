@@ -1,0 +1,56 @@
+---
+url: "https://htpldn.moj.gov.vn/Pages/chi-tiet-tin.aspx?ItemID=207&l=Tuvanphapluat"
+author: "Trung tam Ho tro phap ly cho doanh nghiep nho va vua - Bo Tu phap"
+published_date: "30/05/2025"
+date_crawled: "2026-08-04T10:38:40+07:00"
+source_domain: "htpldn.moj.gov.vn"
+source_owner: "Trung tam Ho tro phap ly cho doanh nghiep nho va vua - Bo Tu phap"
+topic: "lam them gio"
+document_type: "legal_advice_article"
+language: "vi"
+source_file: "quy-dinh-lam-them-gio.json"
+---
+
+# Đề nghị cho biết quy định pháp luật về làm thêm giờ?
+*Đề nghị cho biết quy định pháp luật về làm thêm giờ?*
+
+![](https://daphuongtien.moj.gov.vn/noidung/tintuc/PublishingImages/untitled%20design.png)
+
+Theo quy định tại Điều 107 Bộ luật Lao động, thời gian làm thêm giờ là khoảng thời gian làm việc ngoài thời giờ làm việc bình thường theo quy định của pháp luật, thỏa ước lao động tập thể hoặc nội quy lao động. Làm thêm giờ được quy định chi tiết tại Điều 59, 60, 61 và 62 Nghị định 145/2020/NĐ – CP.
+***a) Điều kiện làm thêm giờ***
+Người sử dụng lao động được sử dụng người lao động làm thêm giờ khi đáp ứng đầy đủ các yêu cầu sau đây:
+- Phải được sự đồng ý của người lao động: Trừ các trường hợp làm thêm giờ theo quy định tại Điều 108 Bộ luật Lao động để(i)Thực hiện lệnh động viên, huy động bảo đảm nhiệm vụ quốc phòng, an ninh theo quy định của pháp luật; (ii) Thực hiện các công việc nhằm bảo vệ tính mạng con người, tài sản của cơ quan, tổ chức, cá nhân trong phòng ngừa, khắc phục hậu quả thiên tai, hỏa hoạn, dịch bệnh nguy hiểm và thảm họa, trừ trường hợp có nguy cơ ảnh hưởng đến tính mạng, sức khỏe của người lao động theo quy định của pháp luật về an toàn, vệ sinh lao động. Các trường hợp khác khi tổ chức làm thêm giờ, người sử dụng lao động phải được sự đồng ý của người lao động tham gia làm thêm về các nội dung sau đây:
++ Thời gian làm thêm;
++ Địa điểm làm thêm;
++ Công việc làm thêm.
+Trường hợp sự đồng ý của người lao động được ký thành văn bản riêng thì tham khảo Mẫu số 01/PLIV Phụ lục IV ban hành kèm theo Nghị định 145/2020/NĐ- CP hoặc có thể xem tại phụ lục IV của tài liệu này.
+- Bảo đảm số giờ làm thêm của người lao động không quá 50% số giờ làm việc bình thường trong 01 ngày; trường hợp áp dụng quy định thời giờ làm việc bình thường theo tuần thì tổng số giờ làm việc bình thường và số giờ làm thêm không quá 12 giờ trong 01 ngày; không quá 40 giờ trong 01 tháng;
+- Bảo đảm số giờ làm thêm của người lao động không quá 200 giờ trong 01 năm, trừ trường hợp được làm thêm không quá 300 giờ trong 01 năm theo quy định của pháp luật.
+***b) Giới hạn số giờ làm thêm***
+- Tổng số giờ làm thêm không quá 50% số giờ làm việc bình thường trong 01 ngày khi làm thêm vào ngày làm việc bình thường, trừ trường hợp quy định thời giờ làm việc bình thường hoặc làm việc không trọn thời gian.
+- Trường hợp áp dụng quy định thời giờ làm việc bình thường theo tuần thì tổng số giờ làm việc bình thường và số giờ làm thêm không quá 12 giờ trong 01 ngày.
+- Trường hợp làm việc không trọn thời gian quy định tại Điều 32 của Bộ luật Lao động thì tổng số giờ làm việc bình thường và số giờ làm thêm không quá 12 giờ trong 01 ngày.
+- Tổng số giờ làm thêm không quá 12 giờ trong một ngày, khi làm thêm vào ngày nghỉ lễ, tết và ngày nghỉ hằng tuần.
+- Thời giờ quy định tại các khoản 1 Điều 58 Nghị định này[[1]](#_ftn1) được giảm trừ khi tính tổng số giờ làm thêm trong tháng, trong năm để xác định việc tuân thủ quy định tại điểm b, điểm c khoản 2 Điều 107 của Bộ luật Lao động.
+Như vậy Nghị định số 145/2020/NĐ-CP nêu rõ, tổng số giờ làm thêm không quá 50% số giờ làm việc bình thường trong 01 ngày khi làm thêm vào ngày làm việc bình thường, trừ trường hợp áp dụng quy định thời giờ làm việc bình thường theo tuần thì tổng số giờ làm việc bình thường và số giờ làm thêm không quá 12 giờ trong 01 ngày và trường hợp làm việc không trọn thời gian thì tổng số giờ làm việc bình thường và số giờ làm thêm không quá 12 giờ trong 01 ngày. Tổng số giờ làm thêm không quá 12 giờ trong một ngày, khi làm thêm vào ngày nghỉ lễ, tết và ngày nghỉ hằng tuần.
+***c) Các trường hợp được tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm***
+*\* Các trường hợp tổ chức làm thêm giờ đến 300 giờ trong một năm*
+Theo quy định tại khoản 3, Điều 107 Bộ luật Lao động và Điều 61 Nghị định 145/2020/NĐ – CP, các trường hợp được tổ chức làm thêm giờ trên 200 giờ đến 300 giờ trong một năm bao gồm:
+(i) Sản xuất, gia công xuất khẩu sản phẩm hàng dệt, may, da, giày, điện, điện tử, chế biến nông, lâm, diêm nghiệp, thủy sản;
+(ii) Sản xuất, cung cấp điện, viễn thông, lọc dầu; cấp, thoát nước;
+(iii) Trường hợp giải quyết công việc đòi hỏi lao động có trình độ chuyên môn, kỹ thuật cao mà thị trường lao động không cung ứng đầy đủ, kịp thời;
+(iv) Trường hợp phải giải quyết công việc cấp bách, không thể trì hoãn do tính chất thời vụ, thời điểm của nguyên liệu, sản phẩm hoặc để giải quyết công việc phát sinh do yếu tố khách quan không dự liệu trước, do hậu quả thời tiết, thiên tai, hỏa hoạn, địch họa, thiếu điện, thiếu nguyên liệu, sự cố kỹ thuật của dây chuyền sản xuất;
+(v) Các trường hợp phải giải quyết công việc cấp bách, không thể trì hoãn phát sinh từ các yếu tố khách quan liên quan trực tiếp đến hoạt động công vụ trong các cơ quan, đơn vị nhà nước, trừ các trường hợp quy định tại Điều 108 của Bộ luật Lao động.
+(vi) Cung ứng dịch vụ công; dịch vụ khám bệnh, chữa bệnh; dịch vụ giáo dục, giáo dục nghề nghiệp.
+(vii) Công việc trực tiếp sản xuất, kinh doanh tại các doanh nghiệp thực hiện thời giờ làm việc bình thường không quá 44 giờ trong một tuần.
+*\* Thông báo về việc tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm*
+*- Gửi thông báo:* Khi tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm, người sử dụng lao động phải thông báo cho Sở Lao động - Thương binh và Xã hội tại các nơi sau:
+-  Nơi người sử dụng lao động tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm;
+- Nơi đặt trụ sở chính, nếu trụ sở chính đóng trên địa bàn tỉnh, thành phố trực thuộc Trung ương khác với nơi người sử dụng lao động tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm.
+Trường hợp người sử dụng lao động đặt trụ sở chính hoặc tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm trên địa bàn khu công nghệ cao thì phải thông báo cho Ban quản lý khu công nghệ cao về việc tổ chức làm thêm theo thời gian và biểu mẫu quy định.
+*- Thời hạn thông báo:* Việc thông báo phải được thực hiện chậm nhất sau 15 ngày kể từ ngày thực hiện làm thêm từ trên 200 giờ đến 300 giờ trong một năm.
+- Văn bản thông báo làm thêm giờ theo Mẫu số 02/PLIV Phụ lục IV ban hành kèm theo Nghị định 145/2020/NĐ –CP hoặc có thể xem tại phụ lục V của tài liệu này.
+
+---
+
+[[1]](#_ftnref1) Nghỉ trong giờ làm việc theo quy định tại khoản 2, Điều 64 Bộ luật Lao động.
