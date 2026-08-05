@@ -8,6 +8,13 @@ sdk_version: "1.35.0"
 app_file: app.py
 pinned: false
 ---
+**Thành viên:** 
+
+| STT | Họ và tên | Mã học viên | Vai trò trong nhóm |
+|-----|-----------|-------------|--------------------|
+| 1 | Nguyễn Duy Trọng | 2A202601333 | Leader |
+| 2 | Nguyễn Hoàng Tín | 2A202601603 | Thành viên |
+| 3 | Bùi Thế Huy | 2A202601881 | Thành viên |
 
 # Ngày 8 — RAG Pipeline v2
 
